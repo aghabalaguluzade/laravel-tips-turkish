@@ -2,23 +2,23 @@
 
 ⬆️ [Go to main menu](README.md#laravel-tips) ⬅️ [Previous (Auth)](auth.md) ➡️ [Next (Artisan)](artisan.md)
 
-- [Testing email into laravel.log](#testing-email-into-laravellog)
-- [You don’t have to store files to use them as email attachments in Laravel](#you-dont-have-to-store-files-to-use-them-as-email-attachments-in-laravel)
-- [Preview Mailables](#preview-mailables)
-- [Preview Mail without Mailables](#preview-mail-without-mailables)
-- [Default Email Subject in Laravel Notifications](#default-email-subject-in-laravel-notifications)
-- [Send Notifications to Anyone](#send-notifications-to-anyone)
-- [Set conditional object properties](#set-conditional-object-properties)
+- [E-postayı laravel.log'da test etme](#e-postayı-laravellogda-test-etme)
+- [Laravel'de e-posta eki olarak kullanmak için dosyaları saklamak zorunda değilsiniz](#laravelde-e-posta-eki-olarak-kullanmak-için-dosyaları-saklamak-zorunda-değilsiniz)
+- [Mailables Önizleme](#mailables-önizleme)
+- [Mailables olmadan Posta Önizleme](#mailables-olmadan-posta-önizleme)
+- [Laravel bildirimlerinde varsayılan e-posta konusu](#laravel-bildirimlerinde-varsayılan-e-posta-konusu)
+- [Herkese bildirim gönder](#herkese-bildirim-gönder)
+- [Koşullu nesne özelliklerini ayarlama](#koşullu-nesne-özelliklerini-ayarlama)
 
-### Testing email into laravel.log
+### E-postayı laravel.log'da test etme
 
-If you want to test email contents in your app but unable or unwilling to set up something like Mailgun, use `.env` parameter `MAIL_DRIVER=log` and all the email will be saved into `storage/logs/laravel.log` file, instead of actually being sent.
+Uygulamanızda e-posta içeriklerini test etmek istiyorsanız ancak Mailgun gibi bir şey kuramıyorsanız veya kurmak istemiyorsanız, `.env` parametresini `MAIL_DRIVER=log` kullanın ve tüm e-postalar gerçekten gönderilmek yerine `storage/logs/laravel.log` dosyasına kaydedilecektir.
 
-### You don’t have to store files to use them as email attachments in Laravel
+### Laravel'de e-posta eki olarak kullanmak için dosyaları saklamak zorunda değilsiniz
 
-Simply use **attachData** to add user uploaded files in Mailables.
+Kullanıcı tarafından yüklenen dosyaları Mailables'a eklemek için **attachData**'yı kullanmanız yeterlidir.
 
-Here's a snippet from a Mailable class using it.
+İşte bunu kullanan Mailable sınıfından bir örnek.
 ```php
 public function build()
 {
@@ -34,9 +34,9 @@ public function build()
 
 Tip given by [@ecrmnn](https://twitter.com/ecrmnn/status/1570449885664808961)
 
-### Preview Mailables
+### Mailables Önizleme
 
-If you use Mailables to send email, you can preview the result without sending, directly in your browser. Just return a Mailable as route result:
+E-posta göndermek için Mailables'ı kullanıyorsanız, sonucu göndermeden doğrudan tarayıcınızda önizleyebilirsiniz. Rota sonucu olarak bir Mailable döndürmeniz yeterlidir:
 
 ```php
 Route::get('/mailable', function () {
@@ -45,9 +45,9 @@ Route::get('/mailable', function () {
 });
 ```
 
-### Preview Mail without Mailables
+### Mailables olmadan Posta Önizleme
 
-You can also preview your email without Mailables. For instance, when you are creating notification, you can specify the markdown that may be use for your mail notification.
+E-postanızı Mailables olmadan da önizleyebilirsiniz. Örneğin, bildirim oluştururken posta bildiriminiz için kullanılabilecek işaretlemeyi belirtebilirsiniz.
 
 ```php
 use Illuminate\Notifications\Messages\MailMessage;
@@ -58,15 +58,15 @@ Route::get('/mailable', function () {
 });
 ```
 
-You may also use other methods provided by `MailMessage` object such as `view` and others.
+Ayrıca `MailMessage` nesnesi tarafından sağlanan `view` ve diğerleri gibi diğer yöntemleri de kullanabilirsiniz.
 
 Tip given by [@raditzfarhan](https://github.com/raditzfarhan)
 
-### Default Email Subject in Laravel Notifications
+### Laravel bildirimlerinde varsayılan e-posta konusu
 
-If you send Laravel Notification and don't specify subject in **toMail()**, default subject is your notification class name, CamelCased into Spaces.
+Laravel Bildirimi gönderirseniz ve **toMail()** içinde konu belirtmezseniz, varsayılan konu bildirim sınıfınızın adıdır ve CamelCased ile boşluklara ayrılır.
 
-So, if you have:
+Yani, eğer varsa:
 
 ```php
 class UserRegistrationEmail extends Notification {
@@ -74,11 +74,11 @@ class UserRegistrationEmail extends Notification {
 }
 ```
 
-Then you will receive an email with subject **User Registration Email**.
+Ardından **Kullanıcı Kayıt E-postası** konulu bir e-posta alacaksınız.
 
-### Send Notifications to Anyone
+### Herkese bildirim gönder
 
-You can send Laravel Notifications not only to a certain user with `$user->notify()`, but also to anyone you want, via `Notification::route()`, with so-called "on-demand" notifications:
+Laravel Bildirimlerini sadece `$user->notify()` ile belirli bir kullanıcıya değil, aynı zamanda `Notification::route()` ile "isteğe bağlı" bildirimler olarak adlandırılan istediğiniz herkese gönderebilirsiniz:
 
 ```php
 Notification::route('mail', 'taylor@example.com')
@@ -87,9 +87,9 @@ Notification::route('mail', 'taylor@example.com')
         ->notify(new InvoicePaid($invoice));
 ```
 
-### Set conditional object properties
+### Koşullu nesne özelliklerini ayarlama
 
-You can use the `when()` or `unless()` methods in your MailMessage notifications to set conditional object properties like a call to action.
+Eylem çağrısı (call to action) gibi koşullu nesne özelliklerini ayarlamak için MailMessage bildirimlerinizde `when()` veya `unless()` yöntemlerini kullanabilirsiniz.
 
 ```php
 class InvoicePaid extends Notification
@@ -107,7 +107,7 @@ class InvoicePaid extends Notification
 }
 ```
 
-Use the `when` or `unless` methods in you own classes by using the `Illuminate\Support\Traits\Conditionable` trait
+"Illuminate\Support\Traits\Conditionable" trait'ini kullanarak kendi sınıflarınızda `when` veya `unless` yöntemlerini kullanın
 
 Tip given by [@Philo01](https://twitter.com/Philo01/status/1503302749525528582)
 
