@@ -2,30 +2,30 @@
 
 ⬆️ [Go to main menu](README.md#laravel-tips) ⬅️ [Previous (Collections)](collections.md) ➡️ [Next (Mail)](mail.md)
 
-- [Check Multiple Permissions at Once](#check-multiple-permissions-at-once)
-- [Authenticate users with more options](#authenticate-users-with-more-options)
-- [More Events on User Registration](#more-events-on-user-registration)
-- [Did you know about Auth::once()?](#did-you-know-about-authonce)
-- [Change API Token on users password update](#change-api-token-on-users-password-update)
-- [Override Permissions for Super Admin](#override-permissions-for-super-admin)
+- [Aynı anda birden fazla izni kontrol edin](#aynı-anda-birden-fazla-izni-kontrol-edin)
+- [Kullanıcıları daha fazla seçenekle doğrulayın](#kullanıcıları-daha-fazla-seçenekle-doğrulayın)
+- [Kullanıcı kaydıyla ilgili daha fazla etkinlik (events)](#kullanıcı-kaydıyla-ilgili-daha-fazla-etkinlik-events)
+- [Auth::once()'u biliyor muydunuz?](#authonceu-biliyor-muydunuz)
+- [Kullanıcı şifre güncellemesinde API Token'ı değiştirme](#kullanıcı-şifre-güncellemesinde-api-tokenı-değiştirme)
+- [Süper yönetici için izinleri geçersiz kılma](#süper-yönetici-için-izinleri-geçersiz-kılma)
 
-### Check Multiple Permissions at Once
+### Aynı anda birden fazla izni kontrol edin
 
-In addition to `@can` Blade directive, did you know you can check multiple permissions at once with `@canany` directive?
+`@can` Blade direktifinin yanı sıra, `@canany` direktifiyle birden fazla izni aynı anda kontrol edebileceğinizi biliyor muydunuz?
 
 ```blade
 @canany(['update', 'view', 'delete'], $post)
-    // The current user can update, view, or delete the post
+    // Geçerli kullanıcı yayını güncelleyebilir, görüntüleyebilir veya silebilir
 @elsecanany(['create'], \App\Post::class)
-    // The current user can create a post
+    // Geçerli kullanıcı gönderi oluşturabilir
 @endcanany
 ```
 
-### Authenticate users with more options
+### Kullanıcıları daha fazla seçenekle doğrulayın
 
-If you only want to authenticate users that are also "activated", for example, it's as simple as passing an extra argument to `Auth::attempt()`.
+Örneğin, yalnızca "etkinleştirilmiş" kullanıcıların kimliğini doğrulamak istiyorsanız, bu, "Auth::attempt()"'a fazladan bir argüman iletmek kadar basittir.
 
-No need for complex middleware or global scopes.
+Karmaşık ara katman yazılımlarına veya global kapsamlara gerek yok.
 
 ```php
 Auth::attempt(
@@ -39,9 +39,9 @@ Auth::attempt(
 
 Tip given by [@LukeDowning19](https://twitter.com/LukeDowning19)
 
-### More Events on User Registration
+### Kullanıcı kaydıyla ilgili daha fazla etkinlik (events)
 
-Want to perform some actions after new user registration? Head to `app/Providers/EventServiceProvider.php` and add more Listeners classes, and then in those classes implement `handle()` method with `$event->user` object
+Yeni kullanıcı kaydından sonra bazı işlemler mi gerçekleştirmek istiyorsunuz? 'app/Providers/EventServiceProvider.php' adresine gidin ve daha fazla Dinleyici (Listeners) sınıfı ekleyin ve ardından bu sınıflarda '$event->user' nesnesiyle 'handle()' yöntemini uygulayın.
 
 ```php
 class EventServiceProvider extends ServiceProvider
@@ -50,16 +50,16 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
 
-            // You can add any Listener class here
-            // With handle() method inside of that class
+            // Buraya herhangi bir Dinleyici sınıfını ekleyebilirsiniz
+            // Bu sınıfın içindeki handle() yöntemi ile
         ],
     ];
 ```
 
-### Did you know about Auth::once()?
+### Auth::once()'u biliyor muydunuz?
 
-You can login with user only for ONE REQUEST, using method `Auth::once()`.
-No sessions or cookies will be utilized, which means this method may be helpful when building a stateless API.
+Kullanıcıyla yalnızca BİR İSTEK için, 'Auth::once()' yöntemini kullanarak giriş yapabilirsiniz.
+Hiçbir oturum veya çerez kullanılmayacaktır, bu da bu yöntemin durum bilgisi olmayan bir API (stateless API) oluştururken yararlı olabileceği anlamına gelir.
 
 ```php
 if (Auth::once($credentials)) {
@@ -67,9 +67,9 @@ if (Auth::once($credentials)) {
 }
 ```
 
-### Change API Token on users password update
+### Kullanıcı şifre güncellemesinde API Token'ı değiştirme
 
-It's convenient to change the user's API Token when its password changes.
+Parolası değiştiğinde kullanıcının API Token'ını değiştirmek pratik olacaktır.
 
 Model:
 
@@ -85,19 +85,19 @@ protected function password(): Attribute
 }
 ```
 
-### Override Permissions for Super Admin
+### Süper yönetici için izinleri geçersiz kılma
 
-If you've defined your Gates but want to override all permissions for SUPER ADMIN user, to give that superadmin ALL permissions, you can intercept gates with `Gate::before()` statement, in `AuthServiceProvider.php` file.
+Gates'inizi tanımladıysanız ancak SUPER ADMIN kullanıcısı için tüm izinleri geçersiz kılmak istiyorsanız, bu süper yöneticiye TÜM izinleri vermek için, `AuthServiceProvider.php` dosyasındaki `Gate::before()` deyimiyle geçitleri durdurabilirsiniz.
 
 ```php
-// Intercept any Gate and check if it's super admin
+// Herhangi bir Gate durdurun ve süper yönetici olup olmadığını kontrol edin
 Gate::before(function($user, $ability) {
     if ($user->is_super_admin == 1) {
         return true;
     }
 });
 
-// Or if you use some permissions package...
+// Ya da bazı izin paketleri kullanırsanız...
 Gate::before(function($user, $ability) {
     if ($user->hasPermission('root')) {
         return true;
@@ -105,7 +105,7 @@ Gate::before(function($user, $ability) {
 });
 ```
 
-If you want to do something in your Gate when there is no user at all, you need to add a type hint for `$user` allowing it to be `null`. For example, if you have a role called Anonymous for your non-logged-in users:
+Eğer Gate'inizde hiç kullanıcı yokken bir şey yapmak istiyorsanız, '$user' için 'null' olmasına izin veren bir tür ipucu eklemeniz gerekir. Örneğin, oturum açmamış kullanıcılarınız için Anonim adında bir rolünüz varsa:
 
 ```php
 Gate::before(function (?User $user, $ability) {
@@ -116,4 +116,3 @@ Gate::before(function (?User $user, $ability) {
     return $user->hasRole('Super Admin') ? true : null;
 });
 ```
-
