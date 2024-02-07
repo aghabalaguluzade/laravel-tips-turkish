@@ -4,16 +4,16 @@
 
 - [Factory callbacks](#factory-callbacks)
 - [Generate Images with Seeds/Factories](#generate-images-with-seedsfactories)
-- [Override values and apply custom login to them](#override-values-and-apply-custom-login-to-them)
+- [Değerleri geçersiz kılma ve onlara özel giriş uygulama](#değerleri-geçersiz-kılma-ve-onlara-özel-giriş-uygulama)
 - [Using factories with relationships](#using-factories-with-relationships)
-- [Create models without dispatching any events](#create-models-without-dispatching-any-events)
+- [Herhangi bir olay göndermeden modeller oluşturun](#herhangi-bir-olay-göndermeden-modeller-oluşturun)
 - [Useful for() method](#useful-for-method)
 - [Run factories without dispatching events](#run-factories-without-dispatching-events)
-- [Specify dependencies in the run() method](#specify-dependencies-in-the-run-method)
+- [run() yönteminde bağımlılıkları belirtin](#run-yönteminde-bağımlılıkları-belirtin)
 
 ### Factory callbacks
 
-While using factories for seeding data, you can provide Factory Callback functions to perform some action after record is inserted.
+Veri ekleme için fabrikaları kullanırken, kayıt eklendikten sonra bazı eylemleri gerçekleştirmek için Fabrika Geri Çağırma (Factory Callback) işlevleri sağlayabilirsiniz.
 
 ```php
 $factory->afterCreating(App\User::class, function ($user, $faker) {
@@ -24,6 +24,7 @@ $factory->afterCreating(App\User::class, function ($user, $faker) {
 ### Generate Images with Seeds/Factories
 
 Did you know that Faker can generate not only text values but also IMAGES? See `avatar` field here - it will generate 50x50 image:
+Faker'ın yalnızca metin değerleri değil, aynı zamanda GÖRÜNTÜLER de oluşturabildiğini biliyor muydunuz? Kodda `avatar` alanına bakın - 50x50 resim oluşturacaktır:
 
 ```php
 $factory->define(User::class, function (Faker $faker) {
@@ -38,9 +39,9 @@ $factory->define(User::class, function (Faker $faker) {
 });
 ```
 
-### Override values and apply custom login to them
+### Değerleri geçersiz kılma ve onlara özel giriş uygulama
 
-When creating records with Factories, you can use Sequence class to override some values and apply custom logic to them.
+Factories ile kayıt oluştururken, bazı değerleri geçersiz kılmak ve bunlara özel mantık uygulamak için Sequence sınıfını kullanabilirsiniz.
 
 ```php
 $users = User::factory()
@@ -66,9 +67,9 @@ User::factory()->has(Post::factory()->count(3))->create();
 
 Tip given by [@oliverds\_](https://twitter.com/oliverds_/status/1441447356323430402)
 
-### Create models without dispatching any events
+### Herhangi bir olay göndermeden modeller oluşturun
 
-Sometimes you may wish to `update` a given model without dispatching any events. You may accomplish this using the `updateQuietly` method
+Bazen herhangi bir olay göndermeden belirli bir modeli `update` isteyebilirsiniz. Bunu `updateQuietly` yöntemini kullanarak gerçekleştirebilirsiniz
 
 ```php
 Post::factory()->createOneQuietly();
@@ -83,7 +84,7 @@ Post::factory()->createManyQuietly([
 
 ### Useful for() method
 
-The Laravel factory has a very useful `for()` method. You can use it to create `belongsTo()` relationships.
+Laravel factory çok kullanışlı bir `for()` metoduna sahiptir. Bunu `belongsTo()` ilişkileri oluşturmak için kullanabilirsiniz.
 
 ```php
 public function run()
@@ -99,7 +100,7 @@ Tip given by [@mmartin_joo](https://twitter.com/mmartin_joo/status/1461002439629
 
 ### Run factories without dispatching events
 
-If you want to create multiple records using Factory without firing any Events, you can wrap your code inside a withoutEvents closure.
+Factory'yi kullanarak herhangi bir Event'i tetiklemeden birden fazla kayıt oluşturmak istiyorsanız, kodunuzu bir WithoutEvents kapanışının içine sarabilirsiniz.
 
 ```php
 $posts = Post::withoutEvents(function () {
@@ -109,9 +110,9 @@ $posts = Post::withoutEvents(function () {
 
 Tip given by [@TheLaravelDev](https://twitter.com/TheLaravelDev/status/1510965402666676227)
 
-### Specify dependencies in the run() method
+### run() yönteminde bağımlılıkları belirtin
 
-You can specify dependencies in the `run()` method of your seeder.
+Bağımlılıkları seeder'ınızın `run()` yönteminde belirtebilirsiniz.
 
 ```php
 class DatabaseSeeder extends Seeder
