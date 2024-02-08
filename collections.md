@@ -4,18 +4,18 @@
 
 - [Use groupBy on Collections with Custom Callback Function](#use-groupby-on-collections-with-custom-callback-function)
 - [Laravel Scopes can be combined using "Higher Order" orWhere Method](#laravel-scopes-can-be-combined-using-higher-order-orwhere-method)
-- [Multiple Collection Methods in a Row](#multiple-collection-methods-in-a-row)
-- [Calculate Sum with Pagination](#calculate-sum-with-pagination)
-- [Serial no in foreach loop with pagination](#serial-no-in-foreach-loop-with-pagination)
+- [Tek satırda çoklu Collection yöntemleri](#tek-satırda-çoklu-collection-yöntemleri)
+- [Sayfalandırmayla Toplamı Hesapla](#sayfalandırmayla-toplamı-hesapla)
+- [Sayfalandırmalı foreach döngüsündeki seri numarası](#sayfalandırmalı-foreach-döngüsündeki-seri-numarası)
 - [Higher order collection message](#higher-order-collection-message)
-- [Get an existing key or insert a value if it doesn't exist and return the value](#get-an-existing-key-or-insert-a-value-if-it-doesnt-exist-and-return-the-value)
+- [Mevcut bir anahtarı alın veya mevcut değilse bir değer ekleyin ve değeri döndürün](#mevcut-bir-anahtarı-alın-veya-mevcut-değilse-bir-değer-ekleyin-ve-değeri-döndürün)
 - [Static times method](#static-times-method)
 
 ### Use groupBy on Collections with Custom Callback Function
 
-If you want to group result by some condition which isn’t a direct column in your database, you can do that by providing a closure function.
+Sonuçları veritabanınızda doğrudan bir sütun olmayan bir koşula göre gruplamak istiyorsanız, bunu bir kapatma işlevi sağlayarak yapabilirsiniz.
 
-For example, if you want to group users by day of registration, here’s the code:
+Örneğin, kullanıcıları kayıt tarihine göre gruplandırmak istiyorsanız kod şu şekildedir:
 
 ```php
 $users = User::all()->groupBy(function($item) {
@@ -23,29 +23,29 @@ $users = User::all()->groupBy(function($item) {
 });
 ```
 
-⚠️ Notice: it is done on a `Collection` class, so performed **AFTER** the results are fetched from the database.
+⚠️ Dikkat: bu işlem bir `Collection` sınıfı üzerinde yapılır, yani sonuçlar veritabanından alındıktan ** SONRA** gerçekleştirilir.
 
 ### Laravel Scopes can be combined using "Higher Order" orWhere Method
 
-Following example from the Docs.
+Dokümanlar'dan aşağıdaki örnek.
 
-Before:
+Önce:
 ```php
 User::popular()->orWhere(function (Builder $query) {
      $query->active();
 })->get()
 ```
 
-After:
+Sonra:
 ```php
 User::popular()->orWhere->active()->get();
 ```
 
 Tip given by [@TheLaravelDev](https://twitter.com/TheLaravelDev/status/1564608208102199298/)
 
-### Multiple Collection Methods in a Row
+### Tek satırda çoklu Collection yöntemleri
 
-If you query all results with `->all()` or `->get()`, you may then perform various Collection operations on the same result, it won’t query database every time.
+Tüm sonuçları `->all()` veya `->get()` ile sorgularsanız, daha sonra aynı sonuç üzerinde çeşitli Collection işlemleri gerçekleştirebilirsiniz, her seferinde veritabanını sorgulamaz.
 
 ```php
 $users = User::all();
@@ -54,27 +54,27 @@ echo 'Average age: ' . $users->avg('age');
 echo 'Total budget: ' . $users->sum('budget');
 ```
 
-### Calculate Sum with Pagination
+### Sayfalandırmayla Toplamı Hesapla
 
-How to calculate the sum of all records when you have only the PAGINATED collection? Do the calculation BEFORE the pagination, but from the same query.
+Yalnızca PAGINATED koleksiyonuna sahip olduğunuzda tüm kayıtların toplamı nasıl hesaplanır? Hesaplamayı sayfalandırmadan ÖNCE, ancak aynı sorgudan yapın.
 
 ```php
-// How to get sum of post_views with pagination?
+// Sayfalandırmayla post_view'lerin toplamı nasıl alınır?
 $posts = Post::paginate(10);
-// This will be only for page 1, not ALL posts
+// Bu sadece 1. sayfa için olacak, TÜM gönderiler için değil
 $sum = $posts->sum('post_views');
 
-// Do this with Query Builder
+// Bunu Query Builder ile yapın
 $query = Post::query();
-// Calculate sum
+// Toplamı hesapla
 $sum = $query->sum('post_views');
-// And then do the pagination from the same query
+// Ve sonra aynı sorgudan sayfalandırmayı yapın
 $posts = $query->paginate(10);
 ```
 
-### Serial no in foreach loop with pagination
+### Sayfalandırmalı foreach döngüsündeki seri numarası
 
-We can use foreach collection items index as serial no (SL) in pagination.
+Sayfalandırmada foreach koleksiyon öğeleri indeksini seri no (SL) olarak kullanabiliriz.
 
 ```php
    ...
@@ -87,12 +87,12 @@ We can use foreach collection items index as serial no (SL) in pagination.
     @endforeach
 ```
 
-it will solve the issue of next pages(?page=2&...) index count from continue.
+sonraki sayfalar(?page=2&...) dizin sayısının devam etmesi sorununu çözecektir.
 
 ### Higher order collection message
 
-Collections also provide support for "higher order messages", which are short-cuts for performing common actions on collections.
-This example calculates the price per group of products on an offer.
+Koleksiyonlar ayrıca, koleksiyonlar üzerinde ortak eylemler gerçekleştirmek için kısa yollar olan "higher order messages" için destek sağlar.
+Bu örnek, bir teklifteki ürün grubu başına fiyatı hesaplar.
 
 ```php
 $offer = [
@@ -110,9 +110,9 @@ $offer = [
 $totalPerGroup = collect($offer['lines'])->groupBy->group->map->sum('price');
 ```
 
-### Get an existing key or insert a value if it doesn't exist and return the value
+### Mevcut bir anahtarı alın veya mevcut değilse bir değer ekleyin ve değeri döndürün
 
-In Laravel 8.81 `getOrPut` method to Collections that simplifies the use-case where you want to either get an existing key or insert a value if it doesn't exist and return the value.
+Laravel 8.81`de Collections`a `getOrPut` metodu, mevcut bir anahtarı almak veya mevcut değilse bir değer eklemek ve değeri döndürmek istediğiniz kullanım durumunu basitleştirir.
 
 ```php
 $key = 'name';
@@ -134,7 +134,7 @@ Tip given by [@Teacoders](https://twitter.com/Teacoders/status/14883388155927183
 
 ### Static times method
 
-The static times method creates a new collection by invoking the given closure a specified number of times.
+Statik times yöntemi, verilen closure'ı belirtilen sayıda çağırarak yeni bir koleksiyon oluşturur.
 
 ```php
 Collection::times(7, function ($number) {
