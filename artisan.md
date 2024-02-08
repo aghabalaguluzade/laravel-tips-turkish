@@ -3,18 +3,18 @@
 ⬆️ [Go to main menu](README.md#laravel-tips) ⬅️ [Previous (Mail)](mail.md) ➡️ [Next (Factories)](factories.md)
 
 - [Artisan command parameters](#artisan-command-parameters)
-- [Execute a Closure after command runs without errors or has any errors](#execute-a-closure-after-command-runs-without-errors-or-has-any-errors)
-- [Run artisan commands on specific environments](#run-artisan-commands-on-specific-environments)
+- [Komut hatasız çalıştıktan veya hata verdikten sonra bir closure çalıştırma](#komut-hatasız-çalıştıktan-veya-hata-verdikten-sonra-bir-closure-çalıştırma)
+- [Belirli ortamlarda artisan komutlarını çalıştırma](#belirli-ortamlarda-artisan-komutlarını-çalıştırma)
 - [Maintenance Mode](#maintenance-mode)
 - [Artisan command help](#artisan-command-help)
 - [Exact Laravel version](#exact-laravel-version)
-- [Launch Artisan command from anywhere](#launch-artisan-command-from-anywhere)
-- [Hide your custom command](#hide-your-custom-command)
+- [Artisan komutunu her yerden başlatın](#artisan-komutunu-her-yerden-başlatın)
+- [Özel komutunuzu gizleyin](#özel-komutunuzu-gizleyin)
 - [Skip method](#skip-method)
 
 ### Artisan command parameters
 
-When creating Artisan command, you can ask the input in variety of ways: `$this->confirm()`, `$this->anticipate()`, `$this->choice()`.
+Artisan komutunu oluştururken girişi çeşitli şekillerde sorabilirsiniz: `$this->confirm()`, `$this->anticipate()`, `$this->choice()`.
 
 ```php
 // Yes or no?
@@ -22,16 +22,16 @@ if ($this->confirm('Do you wish to continue?')) {
     //
 }
 
-// Open question with auto-complete options
+// Soruyu otomatik tamamlama seçenekleriyle açın
 $name = $this->anticipate('What is your name?', ['Taylor', 'Dayle']);
 
-// One of the listed options with default index
+// Varsayılan indeks ile listelenen seçeneklerden biri
 $name = $this->choice('What is your name?', ['Taylor', 'Dayle'], $defaultIndex);
 ```
 
-### Execute a Closure after command runs without errors or has any errors
+### Komut hatasız çalıştıktan veya hata verdikten sonra bir closure çalıştırma
 
-With Laravel scheduler you can execute a Closure when a command runs without errors with the onSuccess() method and also when a command has any errors with the onFailure() method.
+Laravel scheduler ile, bir komut onSuccess() metodu ile hatasız çalıştığında ve ayrıca bir komut onFailure() metodu ile herhangi bir hata olduğunda bir Closure çalıştırabilirsiniz.
 
 ```php
 protected function schedule(Schedule $schedule)
@@ -45,9 +45,9 @@ protected function schedule(Schedule $schedule)
 
 Tip given by [@wendell_adriel](https://twitter.com/wendell_adriel)
 
-### Run artisan commands on specific environments
+### Belirli ortamlarda artisan komutlarını çalıştırma
 
-Take control of your Laravel scheduled commands. Run them on specific environments for ultimate flexibility.
+Laravel zamanlanmış komutlarınızın kontrolünü elinize alın. En üst düzey esneklik için bunları belirli ortamlarda çalıştırın.
 
 ```php
 $schedule->command('reports:send')
@@ -59,36 +59,36 @@ Tip given by [@LaraShout](https://twitter.com/LaraShout)
 
 ### Maintenance Mode
 
-If you want to enable maintenance mode on your page, execute the down Artisan command:
+Sayfanızda bakım modunu etkinleştirmek istiyorsanız down Artisan komutunu çalıştırın:
 
 ```bash
 php artisan down
 ```
 
-Then people would see default 503 status page.
+İnsanlar varsayılan 503 durum sayfasını görürler.
 
-You may also provide flags, in Laravel 8:
+Ayrıca Laravel 8'de bayraklar da sağlayabilirsiniz:
 
-- the path the user should be redirected to
-- the view that should be prerendered
-- secret phrase to bypass maintenance mode
-- retry page reload every X seconds
+- kullanıcının yönlendirilmesi gereken yol
+- önceden oluşturulması gereken görünüm
+- bakım modunu atlamak için gizli ifade
+- her X saniyede bir sayfayı yeniden yüklemeyi deneyin
 
 ```bash
 php artisan down --redirect="/" --render="errors::503" --secret="1630542a-246b-4b66-afa1-dd72a4c43515" --retry=60
 ```
 
-Before Laravel 8:
+Laravel 8'den önce:
 
-- message that would be shown
-- retry page reload every X seconds
-- still allow the access to some IP address
+- gösterilecek mesaj
+- her X saniyede bir sayfayı yeniden yüklemeyi deneyin
+- yine de bazı IP adreslerine erişime izin ver
 
 ```bash
 php artisan down --message="Upgrading Database" --retry=60 --allow=127.0.0.1
 ```
 
-When you've done the maintenance work, just run:
+Bakım işini tamamladığınızda şunu çalıştırın:
 
 ```bash
 php artisan up
@@ -96,41 +96,41 @@ php artisan up
 
 ### Artisan command help
 
-To check the options of artisan command, Run artisan commands with `--help` flag. For example, `php artisan make:model --help` and see how many options you have:
+Artisan komutunun seçeneklerini kontrol etmek için artisan komutlarını `--help` bayrağıyla çalıştırın. Örneğin, 'php artisan make:model --help' ve kaç seçeneğiniz olduğunu görün:
 
 ```
 Options:
   -a, --all             Generate a migration, seeder, factory, policy, resource controller, and form request classes for the model
   -c, --controller      Create a new controller for the model
   -f, --factory         Create a new factory for the model
-      --force           Create the class even if the model already exists
+      --force           Model zaten mevcut olsa bile sınıfı oluşturun
   -m, --migration       Create a new migration file for the model
-      --morph-pivot     Indicates if the generated model should be a custom polymorphic intermediate table model
+      --morph-pivot     Oluşturulan modelin özel bir polimorfik ara tablo modeli olup olmayacağını belirtir
       --policy          Create a new policy for the model
   -s, --seed            Create a new seeder for the model
-  -p, --pivot           Indicates if the generated model should be a custom intermediate table model
-  -r, --resource        Indicates if the generated controller should be a resource controller
-      --api             Indicates if the generated controller should be an API resource controller
-  -R, --requests        Create new form request classes and use them in the resource controller
-      --test            Generate an accompanying PHPUnit test for the Model
-      --pest            Generate an accompanying Pest test for the Model
-  -h, --help            Display help for the given command. When no command is given display help for the list command
-  -q, --quiet           Do not output any message
+  -p, --pivot           Oluşturulan modelin özel bir ara tablo modeli olup olmayacağını belirtir
+  -r, --resource        Oluşturulan denetleyicinin (controller) bir kaynak denetleyicisi olup olmayacağını belirtir
+      --api             Oluşturulan denetleyicinin bir API kaynak denetleyicisi olup olmayacağını belirtir
+  -R, --requests        Yeni form isteği sınıfları oluşturun ve bunları kaynak denetleyicisinde kullanın
+      --test            Model için eşlik eden bir PHPUnit testi oluşturun
+      --pest            Model için eşlik eden bir Pest testi oluşturun
+  -h, --help            Verilen komut için yardımı görüntüler. Komut verilmediğinde liste komutu için yardımı görüntüler
+  -q, --quiet           Herhangi bir mesaj çıkarmayın
   -V, --version         Display this application version
       --ansi|--no-ansi  Force (or disable --no-ansi) ANSI output
-  -n, --no-interaction  Do not ask any interactive question
-      --env[=ENV]       The environment the command should run under
-  -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+  -n, --no-interaction  İnteraktif soru sormayın
+      --env[=ENV]       Komutun altında çalışması gereken ortam
+  -v|vv|vvv, --verbose  Mesajların ayrıntı düzeyini artırın: Normal çıktı için 1, daha ayrıntılı çıktı için 2 ve hata ayıklama için 3
 ```
 
 ### Exact Laravel version
 
-Find out exactly what Laravel version you have in your app, by running command
+Komutu çalıştırarak uygulamanızda tam olarak hangi Laravel sürümüne sahip olduğunuzu öğrenin
 `php artisan --version`
 
-### Launch Artisan command from anywhere
+### Artisan komutunu her yerden başlatın
 
-If you have an Artisan command, you can launch it not only from Terminal, but also from anywhere in your code, with parameters. Use Artisan::call() method:
+Eğer Artisan komutunuz varsa onu sadece Terminalden değil kodunuzun herhangi bir yerinden parametrelerle başlatabilirsiniz. Artisan::call() yöntemini kullanın:
 
 ```php
 Route::get('/foo', function () {
@@ -142,9 +142,9 @@ Route::get('/foo', function () {
 });
 ```
 
-### Hide your custom command
+### Özel komutunuzu gizleyin
 
-If you don't want to show a specific command on the artisan command list, set `hidden` property to `true`
+Artisan komut listesinde belirli bir komutun gösterilmesini istemiyorsanız, `hidden` özelliğini `true` olarak ayarlayın.
 
 ```php
 class SendMail extends Command
@@ -154,15 +154,15 @@ class SendMail extends Command
 }
 ```
 
-You won't see `send:mail` on the available commands if you typed `php artisan`
+Eğer `php artisan` yazdıysanız mevcut komutlar arasında `send:mail` göremezsiniz
 
 Tip given by [@sky_0xs](https://twitter.com/sky_0xs/status/1487921500023832579)
 
 ### Skip method
 
-Laravel the skip method in scheduler
+Laravel zamanlayıcıda skip yöntemi
 
-You can use `skip` in your commands to skip an execution
+Bir yürütmeyi atlamak için komutlarınızda `skip` kullanabilirsiniz
 
 ```php
 $schedule->command('emails:send')->daily()->skip(function () {
