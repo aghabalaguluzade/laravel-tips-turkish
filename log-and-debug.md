@@ -3,23 +3,23 @@
 ⬆️ [Go to main menu](README.md#laravel-tips) ⬅️ [Previous (Factories)](factories.md) ➡️ [Next (API)](api.md)
 
 - [Logging with parameters](#logging-with-parameters)
-- [Log Long Running Laravel Queries](#log-long-running-laravel-queries)
+- [Uzun süre çalışan laravel sorgularını günlüğe kaydet](#uzun-süre-çalışan-laravel-sorgularını-günlüğe-kaydet)
 - [Benchmark class](#benchmark-class)
-- [More convenient DD](#more-convenient-dd)
+- [Daha kullanışlı DD](#daha-kullanışlı-dd)
 - [Log with context](#log-with-context)
-- [Quickly output an Eloquent query in its SQL form](#quickly-output-an-eloquent-query-in-its-sql-form)
-- [Log all the database queries during development](#log-all-the-database-queries-during-development)
-- [Discover all events fired in one request](#discover-all-events-fired-in-one-request)
+- [Eloquent sorgusunu hızla SQL biçiminde çıktılayın](#eloquent-sorgusunu-hızla-sql-biçiminde-çıktılayın)
+- [Geliştirme sırasındaki tüm veritabanı sorgularını günlüğe kaydedin](#geliştirme-sırasındaki-tüm-veritabanı-sorgularını-günlüğe-kaydedin)
+- [Tek bir istekte ateşlenen tüm olayları keşfedin](#tek-bir-istekte-ateşlenen-tüm-olayları-keşfedin)
 
 ### Logging with parameters
 
-You can write `Log::info()`, or shorter `info()` message with additional parameters, for more context about what happened.
+Ne olduğu hakkında daha fazla bağlam için `Log::info()` veya ek parametrelerle daha kısa `info()` mesajı yazabilirsiniz.
 
 ```php
 Log::info('User failed to login.', ['id' => $user->id]);
 ```
 
-### Log Long Running Laravel Queries
+### Uzun süre çalışan laravel sorgularını günlüğe kaydet
 
 ```php
 DB::enableQueryLog();
@@ -36,9 +36,9 @@ Tip given by [@realstevebauman](https://twitter.com/realstevebauman/status/15769
 
 ### Benchmark class
 
-In Laravel 9.32 we have a Benchmark class that can measure the time of any task.
+Laravel 9.32'de herhangi bir görevin süresini ölçebilen bir Benchmark sınıfımız var.
 
-It's a pretty useful helper:
+Oldukça kullanışlı bir yardımcıdır:
 ```php
 class OrderController
 {
@@ -51,23 +51,23 @@ class OrderController
 
 Tip given by [@mmartin_joo](https://twitter.com/mmartin_joo/status/1583096196494553088)
 
-### More convenient DD
+### Daha kullanışlı DD
 
-Instead of doing `dd($result)` you can put `->dd()` as a method directly at the end of your Eloquent sentence, or any Collection.
+`dd($result)` yapmak yerine, Eloquent cümlenizin veya herhangi bir Koleksiyonun sonuna doğrudan bir yöntem olarak `->dd()` koyabilirsiniz.
 
 ```php
-// Instead of
+// Yerine
 $users = User::where('name', 'Taylor')->get();
 dd($users);
-// Do this
+// Bunu yap
 $users = User::where('name', 'Taylor')->get()->dd();
 ```
 
 ### Log with context
 
-New in Laravel 8.49: `Log::withContext()` will help you to differentiate the Log messages between different requests.
+Laravel 8.49'daki yenilik: `Log::withContext()`, farklı istekler arasındaki Log mesajlarını ayırt etmenize yardımcı olacaktır.
 
-If you create a Middleware and set this context, all Log messages will contain that context, and you'll be able to search them easier.
+Bir Ara Yazılım oluşturur ve bu bağlamı ayarlarsanız, tüm Günlük (Log) mesajları bu bağlamı içerecek ve bunları daha kolay arayabileceksiniz.
 
 ```php
 public function handle(Request $request, Closure $next)
@@ -84,9 +84,9 @@ public function handle(Request $request, Closure $next)
 }
 ```
 
-### Quickly output an Eloquent query in its SQL form
+### Eloquent sorgusunu hızla SQL biçiminde çıktılayın
 
-If you want to quickly output an Eloquent query in its SQL form, you can invoke the toSql() method onto it like so
+Bir Eloquent sorgusunun SQL biçiminde hızlı bir şekilde çıktısını almak istiyorsanız, toSql() yöntemini bu şekilde çağırabilirsiniz.
 
 ```php
 $invoices = Invoice::where('client', 'James pay')->toSql();
@@ -97,9 +97,9 @@ dd($invoices)
 
 Tip given by [@devThaer](https://twitter.com/devThaer/status/1438816135881822210)
 
-### Log all the database queries during development
+### Geliştirme sırasındaki tüm veritabanı sorgularını günlüğe kaydedin
 
-If you want to log all the database queries during development add this snippet to your AppServiceProvider
+Geliştirme sırasında tüm veritabanı sorgularını günlüğe kaydetmek istiyorsanız AppServiceProvider'ınıza şu kod parçacığını ekleyin
 
 ```php
 public function boot()
@@ -114,14 +114,14 @@ public function boot()
 
 Tip given by [@mmartin_joo](https://twitter.com/mmartin_joo/status/1473262634405449730)
 
-### Discover all events fired in one request
+### Tek bir istekte ateşlenen tüm olayları keşfedin
 
-If you want to implement a new listener to a specific event but you don't know its name, you can log all events fired during the request.
+Belirli bir olay için yeni bir dinleyici uygulamak istiyorsanız ancak adını bilmiyorsanız, istek sırasında ateşlenen tüm olayları günlüğe kaydedebilirsiniz.
 
-You can use the `\Illuminate\Support\Facades\Event::listen()` method on `boot()` method of `app/Providers/EventServiceProvider.php` to catch all events fired.
+Ateşlenen tüm olayları yakalamak için `app/Providers/EventServiceProvider.php`nin `boot()` yönteminde `\Illuminate\Support\Facades\Event::listen()` yöntemini kullanabilirsiniz.
 
-**Important:** If you use the `Log` facade within this event listener then you will need to exclude events named `Illuminate\Log\Events\MessageLogged` to avoid an infinite loop. 
-(Example: `if ($event == 'Illuminate\\Log\\Events\\MessageLogged') return;`)
+**Önemli:** Bu olay dinleyicisi içinde `Log` cephesini kullanırsanız, sonsuz bir döngüden kaçınmak için `Illuminate\Log\Events\MessageLogged` adlı olayları hariç tutmanız gerekecektir. 
+(Örnek: `if ($event == 'Illuminate\\Log\\Events\\MessageLogged') return;`)
 
 ```php
 // Include Event...
