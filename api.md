@@ -3,18 +3,18 @@
 ⬆️ [Go to main menu](README.md#laravel-tips) ⬅️ [Previous (Log and debug)](log-and-debug.md) ➡️ [Next (Other)](other.md)
 
 - [API Resources: With or Without "data"?](#api-resources-with-or-without-data)
-- [Conditional Relationship Counts on API Resources](#conditional-relationship-counts-on-api-resources)
+- [API kaynaklarında koşullu ilişki sayıları](#apı-kaynaklarında-koşullu-ilişki-sayıları)
 - [API Return "Everything went ok"](#api-return-everything-went-ok)
-- [Avoid N+1 queries in API resources](#avoid-n1-queries-in-api-resources)
+- [API kaynaklarında N+1 sorgudan kaçının](#aPI-kaynaklarında-N+1-sorgudan-kaçının)
 - [Get Bearer Token from Authorization header](#get-bearer-token-from-authorization-header)
-- [Sorting Your API Results](#sorting-your-api-results)
+- [API sonuçlarınızı sıralama](#apı-sonuçlarınızı-sıralama)
 - [Customize Exception Handler For API](#customize-exception-handler-for-api)
 - [Force JSON Response For API Requests](#force-json-response-for-api-requests)
 - [API Versioning](#api-versioning)
 
 ### API Resources: With or Without "data"?
 
-If you use Eloquent API Resources to return data, they will be automatically wrapped in 'data'. If you want to remove it, add `JsonResource::withoutWrapping();` in `app/Providers/AppServiceProvider.php`.
+Veri döndürmek için Eloquent API Kaynakları kullanırsanız, bunlar otomatik olarak 'data' ile sarılacaktır. Bunu kaldırmak istiyorsanız, `app/Providers/AppServiceProvider.php` dosyasına `JsonResource::withoutWrapping();` ekleyin.
 
 ```php
 class AppServiceProvider extends ServiceProvider
@@ -28,9 +28,9 @@ class AppServiceProvider extends ServiceProvider
 
 Tip given by [@phillipmwaniki](https://twitter.com/phillipmwaniki/status/1445230637544321029)
 
-### Conditional Relationship Counts on API Resources
+### API kaynaklarında koşullu ilişki sayıları
 
-You may conditionally include the count of a relationship in your resource response by using the whenCounted method. By doing so, the attribute is not included if the relationships' count is missing.
+whenCounted yöntemini kullanarak bir ilişkinin sayımını kaynak yanıtınıza koşullu olarak dahil edebilirsiniz. Bunu yaptığınızda, ilişkilerin sayısı eksikse öznitelik dahil edilmez.
 ```php
 public function toArray($request)
 {
@@ -49,8 +49,7 @@ Tip given by [@mvpopuk](https://twitter.com/mvpopuk/status/1570480977507504128)
 
 ### API Return "Everything went ok"
 
-If you have API endpoint which performs some operations but has no response, so you wanna return just "everything went ok", you may return 204 status code "No
-content". In Laravel, it's easy: `return response()->noContent();`.
+Bazı işlemleri gerçekleştiren ancak yanıt vermeyen API uç noktanız varsa ve bu nedenle yalnızca "her şey yolunda gitti" ifadesini döndürmek istiyorsanız, 204 durum kodunu "İçerik yok" olarak döndürebilirsiniz. Laravel'de bu kolaydır: `return Response()->noContent();`.
 
 ```php
 public function reorder(Request $request)
@@ -63,13 +62,13 @@ public function reorder(Request $request)
 }
 ```
 
-### Avoid N+1 queries in API resources
+### API kaynaklarında N+1 sorgudan kaçının
 
-You can avoid N+1 queries in API resources by using the `whenLoaded()` method.
+API kaynaklarında `whenLoaded()` yöntemini kullanarak N+1 sorgularından kaçınabilirsiniz.
 
-This will only append the department if it’s already loaded in the Employee model.
+Bu, departmanı yalnızca Çalışan modelinde zaten yüklüyse ekleyecektir.
 
-Without `whenLoaded()` there is always a query for the department
+`whenLoaded()` olmadan departman için her zaman bir sorgu vardır
 
 ```php
 class EmployeeResource extends JsonResource
@@ -91,20 +90,20 @@ Tip given by [@mmartin_joo](https://twitter.com/mmartin_joo/status/1473987501501
 
 ### Get Bearer Token from Authorization header
 
-The `bearerToken()` function is very handy when you are working with apis & want to access the token from Authorization header.
+Apiler ile çalışırken ve Authorization başlığından token'a erişmek istediğinizde `bearerToken()` fonksiyonu çok kullanışlıdır.
 
 ```php
-// Don't parse API headers manually like this:
+// API başlıklarını bu şekilde manuel olarak ayrıştırmayın:
 $tokenWithBearer = $request->header('Authorization');
 $token = substr($tokenWithBearer, 7);
 
-//Do this instead:
+//Bunun yerine şunu yapın:
 $token = $request->bearerToken();
 ```
 
 Tip given by [@iamharis010](https://twitter.com/iamharis010/status/1488413755826327553)
 
-### Sorting Your API Results
+### API sonuçlarınızı sıralama
 
 Single-column API sorting, with direction control
 
@@ -217,15 +216,15 @@ Tip given by [Feras Elsharif](https://github.com/ferasbbm)
 
 ### Force JSON Response For API Requests
 
-If you have built an API and it encounters an error when the request does not contain "Accept: application/JSON " HTTP Header then the error will be returned as HTML or redirect response on API routes, so for avoid it we can force all API responses to JSON.
+Bir API oluşturduysanız ve istek "Accept: application/JSON " HTTP Başlığı içermediğinde bir hatayla karşılaşırsa, hata API rotalarında HTML veya yönlendirme yanıtı olarak döndürülür, bu nedenle bundan kaçınmak için tüm API yanıtlarını JSON'a zorlayabiliriz.
 
-The first step is creating middleware by running this command:
+İlk adım, bu komutu çalıştırarak ara yazılım oluşturmaktır:
 
 ```console
 php artisan make:middleware ForceJsonResponse
 ```
 
-Write this code on the handle function in `App/Http/Middleware/ForceJsonResponse.php` file:
+Bu kodu `App/Http/Middleware/ForceJsonResponse.php` dosyasındaki handle fonksiyonuna yazın:
 
 ```php
 public function handle($request, Closure $next)
@@ -235,7 +234,7 @@ public function handle($request, Closure $next)
 }
 ```
 
-Second, register the created middleware in app/Http/Kernel.php file:
+İkinci olarak, oluşturulan ara yazılımı app/Http/Kernel.php dosyasına kaydedin:
 
 ```php
 protected $middlewareGroups = [        
@@ -253,10 +252,10 @@ Tip given by [Feras Elsharif](https://github.com/ferasbbm)
 
 #### When to version?
 
-If you are working on a project that may have multi-release in the future or your endpoints have a breaking change like a change in the format of the response data, and you want to ensure that the API version remains functional when changes are made to the code.
+Gelecekte çoklu sürüme sahip olabilecek bir proje üzerinde çalışıyorsanız veya uç noktalarınızda yanıt verilerinin biçimindeki değişiklik gibi önemli bir değişiklik varsa ve API sürümünün, değişiklik yapıldığında işlevsel kalmasını sağlamak istiyorsanız kod.
 
 #### Change The Default Route Files 
-The first step is to change the route map in the `App\Providers\RouteServiceProvider` file, so let's get started:
+İlk adım, `App\Providers\RouteServiceProvider` dosyasındaki rota haritasını değiştirmektir, o halde başlayalım:
 
 #### Laravel 8 and above:
 
